@@ -1,0 +1,67 @@
+{
+  "name": "veriify",
+  "version": "1.0.0-beta",
+  "description": "AI-Powered Mock Interview Coach",
+  "author": "Veriify",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:backend:mac": "cd backend && pyinstaller --onefile --name app --add-data 'static:static' --add-data 'prompts:prompts' --add-data 'utils:utils' app.py",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.veriify.app",
+    "productName": "Veriify",
+    "copyright": "Copyright © 2026 Veriify",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "assets/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist/",
+        "to": "backend/dist/",
+        "filter": ["**/*"]
+      }
+    ],
+    "dmg": {
+      "title": "Install Veriify",
+      "window": { "width": 540, "height": 380 }
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns",
+      "target": [
+        { "target": "dmg", "arch": ["arm64"] }
+      ],
+      "entitlements": "electron/entitlements.mac.plist",
+      "entitlementsInherit": "electron/entitlements.mac.plist",
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Veriify needs your microphone so you can answer interview questions by voice."
+      }
+    },
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}

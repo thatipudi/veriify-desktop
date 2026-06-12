@@ -1,0 +1,7 @@
+{
+  "name": "veriify-electron",
+  "version": "1.0.0-beta",
+  "description": "Electron shell for the Veriify desktop app",
+  "main": "main.js",
+  "private": true
+}

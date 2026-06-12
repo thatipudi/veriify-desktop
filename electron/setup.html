@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veriify — Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-base:#F0F4FF;
+  --aurora-1:#4F46E5; --aurora-2:#7C3AED; --aurora-3:#06B6D4; --aurora-4:#F43F5E; --aurora-5:#10B981;
+  --text-primary:#0F172A; --text-secondary:#475569; --text-muted:#94A3B8;
+}
+html,body{height:100%;font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text-primary);overflow:hidden}
+html{background:var(--bg-base)}
+body{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;-webkit-app-region:drag}
+button,input,a,.no-drag{-webkit-app-region:no-drag}
+
+/* Aurora */
+.aurora-container{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);mix-blend-mode:multiply;will-change:transform}
+.blob-1{width:560px;height:560px;background:radial-gradient(circle,rgba(79,70,229,0.40),transparent 70%);top:-180px;left:-160px;animation:blob1 25s ease-in-out infinite}
+.blob-2{width:480px;height:480px;background:radial-gradient(circle,rgba(124,58,237,0.35),transparent 70%);top:-100px;right:-120px;animation:blob2 20s ease-in-out infinite}
+.blob-3{width:620px;height:620px;background:radial-gradient(circle,rgba(6,182,212,0.30),transparent 70%);bottom:-260px;left:25%;animation:blob3 30s ease-in-out infinite}
+.blob-4{width:420px;height:420px;background:radial-gradient(circle,rgba(244,63,94,0.22),transparent 70%);bottom:-120px;right:-90px;animation:blob4 22s ease-in-out infinite}
+@keyframes blob1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(70px,50px) scale(1.1)}66%{transform:translate(-30px,70px) scale(.95)}}
+@keyframes blob2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-50px,70px) scale(1.05)}66%{transform:translate(40px,-50px) scale(1.1)}}
+@keyframes blob3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-70px,-50px) scale(1.15)}}
+@keyframes blob4{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-70px) scale(1.1)}66%{transform:translate(-40px,30px) scale(.9)}}
+
+/* Card */
+.wizard{position:relative;z-index:5;width:560px;max-width:92vw}
+.glass-card{
+  background:rgba(255,255,255,0.66);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);
+  border:1px solid rgba(255,255,255,0.85);border-radius:28px;
+  box-shadow:0 10px 50px rgba(79,70,229,0.16),0 1px 0 rgba(255,255,255,0.9) inset;
+  padding:38px 40px 34px;
+}
+.brand{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.brand svg{width:42px;height:42px;animation:logoFloat 4s ease-in-out infinite;filter:drop-shadow(0 4px 14px rgba(79,70,229,0.4))}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(3deg)}}
+.brand h1{font-family:'Orbitron',monospace;font-size:1.9rem;font-weight:900;letter-spacing:1px;
+  background:linear-gradient(135deg,#4F46E5,#7C3AED,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* Progress dots */
+.steps-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0 26px}
+.steps-bar .dot{width:34px;height:5px;border-radius:3px;background:rgba(148,163,184,0.3);transition:background .4s,box-shadow .4s}
+.steps-bar .dot.active{background:linear-gradient(90deg,#4F46E5,#06B6D4);box-shadow:0 0 12px rgba(79,70,229,0.5)}
+.steps-bar .dot.done{background:var(--aurora-5)}
+
+/* Panels */
+.panel{display:none;text-align:center;animation:fadeIn .45s cubic-bezier(.23,1,.32,1)}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.panel h2{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;margin-bottom:10px}
+.panel .sub{color:var(--aurora-2);font-weight:600;font-size:.92rem;margin-bottom:14px}
+.panel p{color:var(--text-secondary);font-size:.95rem;line-height:1.6;max-width:420px;margin:0 auto 8px}
+
+.icon-badge{font-size:2.6rem;margin-bottom:14px;filter:drop-shadow(0 6px 18px rgba(79,70,229,0.3))}
+
+/* Buttons */
+.btn{
+  -webkit-app-region:no-drag;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:22px;padding:14px 30px;border:none;border-radius:14px;cursor:pointer;
+  font-family:'Orbitron',monospace;font-size:.86rem;font-weight:700;letter-spacing:.5px;color:#fff;
+  background:linear-gradient(120deg,#4F46E5,#7C3AED,#06B6D4);background-size:200% 100%;
+  box-shadow:0 8px 26px rgba(79,70,229,0.35);transition:transform .18s,box-shadow .18s,opacity .18s;animation:gradShift 6s ease infinite;
+}
+@keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 14px 38px rgba(79,70,229,0.5)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;animation:none}
+.btn.ghost{background:rgba(255,255,255,0.6);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.85);box-shadow:0 2px 12px rgba(79,70,229,0.08);animation:none;font-family:'Space Grotesk',sans-serif;font-weight:600}
+.btn.ghost:hover{color:var(--text-primary)}
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* Status line */
+.status{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;font-size:.92rem;color:var(--text-secondary);min-height:24px}
+.status .check{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:rgba(16,185,129,0.15);color:#059669;font-weight:700}
+.spinner{width:20px;height:20px;border-radius:50%;background:conic-gradient(from 0deg,transparent,#4F46E5);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 0);mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 0);
+  animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Download ring */
+.ring-wrap{position:relative;width:160px;height:160px;margin:14px auto 6px}
+.ring-svg{width:160px;height:160px;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:rgba(148,163,184,0.22);stroke-width:11}
+.ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:11;stroke-linecap:round;stroke-dasharray:415;stroke-dashoffset:415;transition:stroke-dashoffset .5s ease;filter:drop-shadow(0 0 6px rgba(79,70,229,0.5))}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:'Orbitron',monospace;font-size:1.9rem;font-weight:900}
+.dl-meta{color:var(--text-muted);font-size:.82rem;margin-top:8px}
+.dl-bar-bg{height:8px;border-radius:5px;background:rgba(148,163,184,0.2);overflow:hidden;margin:14px auto 4px;max-width:380px}
+.dl-bar-fill{height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#4F46E5,#7C3AED,#06B6D4);transition:width .5s ease;box-shadow:0 0 12px rgba(79,70,229,0.5)}
+.fun-msg{margin-top:16px;font-style:italic;color:var(--aurora-2);font-size:.9rem;min-height:22px;transition:opacity .4s}
+
+/* Ready checklist */
+.checklist{display:inline-flex;flex-direction:column;gap:11px;margin:18px 0 4px;text-align:left}
+.checklist .row{display:flex;align-items:center;gap:11px;font-size:.95rem;color:var(--text-secondary);font-weight:500;opacity:0;animation:rowIn .5s ease forwards}
+.checklist .row:nth-child(1){animation-delay:.05s}
+.checklist .row:nth-child(2){animation-delay:.2s}
+.checklist .row:nth-child(3){animation-delay:.35s}
+.checklist .row:nth-child(4){animation-delay:.5s}
+@keyframes rowIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.checklist .tick{width:24px;height:24px;border-radius:50%;background:rgba(16,185,129,0.15);color:#059669;display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+
+.footnote{margin-top:18px;font-size:.74rem;color:var(--text-muted)}
+.err{color:#e11d48;font-size:.86rem;margin-top:12px;min-height:18px}
+</style>
+</head>
+<body>
+
+<div class="aurora-container" aria-hidden="true">
+  <div class="blob blob-1"></div><div class="blob blob-2"></div>
+  <div class="blob blob-3"></div><div class="blob blob-4"></div>
+</div>
+
+<!-- shared gradient def for the ring -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#06B6D4"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="wizard">
+  <div class="glass-card">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4F46E5"/><stop offset="100%" stop-color="#06B6D4"/></linearGradient>
+          <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#4F46E5"/></linearGradient>
+        </defs>
+        <circle cx="18" cy="22" r="13" fill="none" stroke="url(#g1)" stroke-width="2.5" opacity="0.9"/>
+        <circle cx="30" cy="22" r="13" fill="none" stroke="url(#g2)" stroke-width="2.5" opacity="0.9"/>
+        <path d="M24 10 C27 14, 29 18, 24 35 C19 18, 21 14, 24 10Z" fill="url(#g1)" opacity="0.85"/>
+        <circle cx="24" cy="11" r="2" fill="url(#g1)" opacity="0.9"/>
+        <circle cx="24" cy="34" r="1.5" fill="url(#g2)" opacity="0.8"/>
+      </svg>
+      <h1>Veriify</h1>
+    </div>
+
+    <div class="steps-bar">
+      <div class="dot active" data-step="1"></div>
+      <div class="dot" data-step="2"></div>
+      <div class="dot" data-step="3"></div>
+      <div class="dot" data-step="4"></div>
+    </div>
+
+    <!-- STEP 1: Welcome -->
+    <div class="panel active" id="panel-1">
+      <div class="icon-badge">👋</div>
+      <h2>Welcome to Veriify</h2>
+      <p>Let's get your AI interview coach ready.</p>
+      <p>This is a one-time setup that takes about 5–10 minutes. Your AI runs 100% on your computer — completely private.</p>
+      <button class="btn" id="btn-start">Get Started →</button>
+    </div>
+
+    <!-- STEP 2: Install Ollama -->
+    <div class="panel" id="panel-2">
+      <div class="icon-badge">⚙️</div>
+      <h2>Installing AI Engine</h2>
+      <p>Veriify uses Ollama to run AI locally on your computer.</p>
+      <div class="status" id="ollama-status"><div class="spinner"></div> Checking for Ollama…</div>
+      <div class="btn-row" id="ollama-actions" style="display:none">
+        <button class="btn" id="btn-download-ollama">Download Ollama</button>
+        <button class="btn ghost" id="btn-ollama-installed">I've installed it →</button>
+      </div>
+      <div class="err" id="ollama-err"></div>
+    </div>
+
+    <!-- STEP 3: Download Model -->
+    <div class="panel" id="panel-3">
+      <h2>Downloading AI Model</h2>
+      <div class="sub">This is a one-time ~5GB download</div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 160 160">
+          <circle class="ring-track" cx="80" cy="80" r="66"></circle>
+          <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="66"></circle>
+        </svg>
+        <div class="ring-center"><div class="ring-pct" id="ring-pct">0%</div></div>
+      </div>
+      <div class="dl-bar-bg"><div class="dl-bar-fill" id="dl-bar"></div></div>
+      <div class="dl-meta" id="dl-meta">Starting download…</div>
+      <div class="fun-msg" id="fun-msg">Teaching the AI to ask tough questions…</div>
+      <div class="err" id="model-err"></div>
+    </div>
+
+    <!-- STEP 4: Ready -->
+    <div class="panel" id="panel-4">
+      <div class="icon-badge">🎉</div>
+      <h2>You're All Set!</h2>
+      <p>Veriify is ready. Your AI interviewer is waiting.</p>
+      <div class="checklist">
+        <div class="row"><span class="tick">✓</span> AI Engine installed</div>
+        <div class="row"><span class="tick">✓</span> Interview model loaded</div>
+        <div class="row"><span class="tick">✓</span> Voice engine ready</div>
+        <div class="row"><span class="tick">✓</span> 100% private &amp; offline</div>
+      </div>
+      <br>
+      <button class="btn" id="btn-finish">Start Interviewing →</button>
+      <div class="err" id="finish-err"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const api = window.veriify || {};
+let current = 1;
+
+function goStep(n) {
+  current = n;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  $('panel-' + n).classList.add('active');
+  document.querySelectorAll('.steps-bar .dot').forEach(d => {
+    const s = parseInt(d.dataset.step);
+    d.classList.toggle('active', s === n);
+    d.classList.toggle('done', s < n);
+  });
+  if (n === 2) runOllamaStep();
+  if (n === 3) runModelStep();
+}
+
+// ── Step 1 ──
+$('btn-start').addEventListener('click', () => goStep(2));
+
+// ── Step 2: Ollama ──
+async function runOllamaStep() {
+  const statusEl = $('ollama-status');
+  const actions = $('ollama-actions');
+  const errEl = $('ollama-err');
+  errEl.textContent = '';
+  actions.style.display = 'none';
+  statusEl.innerHTML = '<div class="spinner"></div> Checking for Ollama…';
+
+  let installed = false;
+  try { installed = await api.checkOllama(); } catch (_) { installed = false; }
+
+  if (installed) {
+    statusEl.innerHTML = '<span class="check">✓</span> Ollama already installed';
+    setTimeout(() => goStep(3), 1200);  // auto-advance
+  } else {
+    statusEl.innerHTML = '<span style="color:#d97706">●</span> Ollama not found on this computer';
+    actions.style.display = 'flex';
+  }
+}
+
+$('btn-download-ollama').addEventListener('click', () => { try { api.installOllama(); } catch (_) {} });
+$('btn-ollama-installed').addEventListener('click', async () => {
+  const errEl = $('ollama-err');
+  errEl.textContent = '';
+  let ok = false;
+  try { ok = await api.checkOllama(); } catch (_) { ok = false; }
+  if (ok) goStep(3);
+  else errEl.textContent = "Still can't find Ollama. Finish installing it, then click again.";
+});
+
+// ── Step 3: Model download ──
+const FUN_MESSAGES = [
+  'Teaching the AI to ask tough questions…',
+  'Loading 10,000 interview scenarios…',
+  'Calibrating the feedback engine…',
+  'Almost ready to stress-test you…'
+];
+let funIdx = 0, funTimer = null;
+const RING_C = 2 * Math.PI * 66; // ≈ 414.7
+
+function setProgress(pct) {
+  pct = Math.max(0, Math.min(100, pct));
+  $('ring-pct').textContent = pct + '%';
+  $('ring-fill').style.strokeDashoffset = RING_C * (1 - pct / 100);
+  $('dl-bar').style.width = pct + '%';
+  // Rough size/time estimate against a ~4.9 GB model
+  const totalGB = 4.9;
+  const doneGB = (totalGB * pct / 100).toFixed(1);
+  $('dl-meta').textContent = pct >= 100
+    ? 'Download complete'
+    : `${doneGB} GB of ${totalGB} GB`;
+}
+
+function startFunMessages() {
+  funIdx = 0;
+  $('fun-msg').textContent = FUN_MESSAGES[0];
+  clearInterval(funTimer);
+  funTimer = setInterval(() => {
+    funIdx = (funIdx + 1) % FUN_MESSAGES.length;
+    const el = $('fun-msg');
+    el.style.opacity = '0';
+    setTimeout(() => { el.textContent = FUN_MESSAGES[funIdx]; el.style.opacity = '1'; }, 350);
+  }, 8000);
+}
+
+async function runModelStep() {
+  const errEl = $('model-err');
+  errEl.textContent = '';
+  setProgress(0);
+
+  // If the model is already present, skip straight to Ready.
+  let ready = false;
+  try { ready = await api.checkModel(); } catch (_) { ready = false; }
+  if (ready) { setProgress(100); clearInterval(funTimer); goStep(4); return; }
+
+  startFunMessages();
+  try {
+    await api.pullModel((p) => setProgress(p));
+    setProgress(100);
+    clearInterval(funTimer);
+    setTimeout(() => goStep(4), 600);
+  } catch (e) {
+    clearInterval(funTimer);
+    errEl.textContent = 'Download failed. Check your connection and reopen Veriify to retry.';
+  }
+}
+
+// ── Step 4: Finish ──
+$('btn-finish').addEventListener('click', async () => {
+  const btn = $('btn-finish');
+  const errEl = $('finish-err');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Launching…';
+  try {
+    await api.finishSetup();   // main process swaps this window to the app
+  } catch (e) {
+    errEl.textContent = 'Could not start Veriify. Please reopen the app.';
+    btn.disabled = false;
+    btn.textContent = 'Start Interviewing →';
+  }
+});
+</script>
+</body>
+</html>

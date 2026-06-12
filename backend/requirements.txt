@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+python-multipart
+httpx
+PyMuPDF
+python-docx
+pytesseract
+Pillow
+websockets
+faster-whisper
+ffmpeg-python
+kokoro-onnx>=0.4.7
+soundfile
+numpy
+psycopg2-binary
+python-dotenv
+resend

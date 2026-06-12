@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+backend/dist/
+backend/build/
+
+# PyInstaller spec (regenerated each build)
+backend/*.spec
+
+# Python artifacts
+*.pyc
+__pycache__/
+
+# Environment / secrets
+.env
+
+# OS cruft
+.DS_Store
+
+# NOTE: the following are intentionally tracked (do NOT ignore):
+#   backend/      (source files)
+#   electron/
+#   assets/
+#   package.json
+#   .github/
