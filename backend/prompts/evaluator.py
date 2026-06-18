@@ -57,24 +57,37 @@ Scoring guidelines:
 - 3-4: Weak. Significant gaps, poor structure, or irrelevant content.
 - 1-2: Very poor. Non-answer, clearly unprepared, or factually wrong.
 
+IMPORTANT: Only evaluate answers that were actually given by the candidate. If an answer is empty, missing, or less than 10 words, mark that question as 'Not answered' and give a score of 0. Never invent or assume answers. Never generate feedback for questions that were not answered.
+
+CRITICAL FORMATTING RULES:
+- "strengths", "improvements", and "recommended_study" MUST each be an array of PLAIN STRINGS.
+- Do NOT use objects/dictionaries inside these arrays. Never write {{"area": "...", "tip": "..."}}.
+- Each improvement is ONE complete sentence written as a string, e.g.:
+  "improvements": [
+    "Work on structuring answers using the STAR format more consistently",
+    "Provide more specific metrics and outcomes in your examples",
+    "Research the company's tech stack before the interview"
+  ]
+- WRONG (never do this): "improvements": [{{"area": "STAR format", "tip": "..."}}]
+
 Return ONLY this JSON (no other text):
 {{
   "overall_score": <float 1.0-10.0, one decimal place>,
   "verdict": "<exactly one of: Interview Ready | Almost Ready - 2-3 weeks of prep | Needs Significant Preparation>",
   "strengths": [
-    "<specific strength 1 — reference actual answers, not generic praise>",
-    "<specific strength 2>",
-    "<specific strength 3>"
+    "<specific strength 1 as a plain string — reference actual answers, not generic praise>",
+    "<specific strength 2 as a plain string>",
+    "<specific strength 3 as a plain string>"
   ],
   "improvements": [
-    "<specific improvement 1 with concrete action item>",
-    "<specific improvement 2 with concrete action item>",
-    "<specific improvement 3 with concrete action item>"
+    "<specific improvement 1 as a plain string with a concrete action item>",
+    "<specific improvement 2 as a plain string with a concrete action item>",
+    "<specific improvement 3 as a plain string with a concrete action item>"
   ],
   "recommended_study": [
-    "<topic or resource 1>",
-    "<topic or resource 2>",
-    "<topic or resource 3>"
+    "<topic or resource 1 as a plain string>",
+    "<topic or resource 2 as a plain string>",
+    "<topic or resource 3 as a plain string>"
   ],
   "per_answer": [
     {{
