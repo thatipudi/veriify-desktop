@@ -119,16 +119,10 @@ jobs:
           name: Veriify-windows
           path: ./artifacts
 
-- name: Delete existing release assets
-        run: |
-          gh release delete-asset v1.0.0-beta "Veriify-1.0.0-beta-arm64.dmg" --repo thatipudi/veriify-desktop --yes 2>/dev/null || true
-          gh release delete-asset v1.0.0-beta "Veriify.Setup.1.0.0-beta.exe" --repo thatipudi/veriify-desktop --yes 2>/dev/null || true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.0-beta
           files: ./artifacts/*
           token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
