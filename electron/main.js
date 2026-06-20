@@ -113,14 +113,14 @@ const LOADING_HTML = `<html>
 // Show the loading screen. URL-encoded so the '#' hex colors aren't parsed as a
 // URL fragment (which would break the gradient and leave a half-rendered page).
 function showLoadingScreen() {
-  if (mainWindow) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(LOADING_HTML));
   }
 }
 
 // Load the real FastAPI frontend.
 function loadApp() {
-  if (mainWindow) mainWindow.loadURL(APP_URL);
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.loadURL(APP_URL);
 }
 
 // Create main window
@@ -170,14 +170,14 @@ function createWindow(page = 'app') {
     if (errorCode === -3) return; // ERR_ABORTED (superseded navigation) — ignore
     if (validatedURL && validatedURL.startsWith(APP_URL) && appLoadRetries < 15) {
       appLoadRetries++;
-      setTimeout(loadApp, 1000);
+      setTimeout(loadApp, 1500);
     }
   });
 
   // Grant/trigger media access once the REAL app is loaded (not the loading
   // screen or the setup wizard).
   mainWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow || !mainWindow.webContents.getURL().startsWith(APP_URL)) return;
+    if (!mainWindow || mainWindow.isDestroyed() || !mainWindow.webContents.getURL().startsWith(APP_URL)) return;
     appLoadRetries = 0;
     mainWindow.webContents.executeJavaScript(`
       navigator.mediaDevices.getUserMedia({ audio: true })
@@ -190,7 +190,7 @@ function createWindow(page = 'app') {
   });
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.show();
   });
 }
 
