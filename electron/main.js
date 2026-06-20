@@ -214,6 +214,11 @@ function startBackend() {
       DATABASE_URL: SUPABASE_DATABASE_URL
     };
 
+    // Set the working directory to the backend folder so the (frozen) backend can
+    // resolve relative paths like static/. `cwd` is the backend dir in dev
+    // (__dirname/../backend) and process.resourcesPath/backend when packaged.
+    try { process.chdir(cwd); } catch (e) { console.error('chdir to backend failed:', e); }
+
     backendProcess = spawn(cmd, args, {
       cwd,
       env: envVars,

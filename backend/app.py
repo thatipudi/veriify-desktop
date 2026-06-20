@@ -28,7 +28,16 @@ from utils import database as authdb
 from utils.email import send_welcome_email
 
 app = FastAPI(title="Mock Interview Coach")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Resolve static/ for both `python app.py` (dev) and the PyInstaller binary.
+# When frozen, PyInstaller extracts bundled data to sys._MEIPASS; fall back to the
+# folder next to the executable, then to this file's directory in dev.
+import sys
+if getattr(sys, "frozen", False):
+    static_dir = os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(sys.executable)), "static")
+else:
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL = "llama3.1:8b"
@@ -36,7 +45,7 @@ MODEL = "llama3.1:8b"
 
 @app.get("/")
 async def root():
-    return HTMLResponse(Path("static/index.html").read_text(encoding="utf-8"))
+    return HTMLResponse(Path(static_dir, "index.html").read_text(encoding="utf-8"))
 
 
 @app.post("/api/analyze")
