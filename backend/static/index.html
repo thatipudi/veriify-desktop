@@ -3215,7 +3215,7 @@ async function speakWithText(fullText, voice) {
           _showSubtitle(chunk.sentence || s);
           await playAudioChunk(chunk.audio, signal);
           played++;
-          if (!signal.aborted) await _sleep((chunk.pause || 0.25) * 1000);  // natural pause
+          if (!signal.aborted) await _sleep((chunk.pause || 0.25) * 1000 * 0.65);  // natural pause
         }
       }
     } catch (e) {
@@ -3789,7 +3789,7 @@ class SimultaneousSpeaker {
           _showSubtitle(chunk.sentence || sentence);
           this.playedAny = true;
           await playAudioChunk(chunk.audio, signal);
-          if (!signal.aborted) await _sleep((chunk.pause || 0.25) * 1000);
+          if (!signal.aborted) await _sleep((chunk.pause || 0.25) * 1000 * 0.65);
         }
       }
     } catch (e) {

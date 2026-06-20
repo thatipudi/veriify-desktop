@@ -28,16 +28,7 @@ from utils import database as authdb
 from utils.email import send_welcome_email
 
 app = FastAPI(title="Mock Interview Coach")
-
-# Resolve static/ for both `python app.py` (dev) and the PyInstaller binary.
-# When frozen, PyInstaller extracts bundled data to sys._MEIPASS; fall back to the
-# folder next to the executable, then to this file's directory in dev.
-import sys
-if getattr(sys, "frozen", False):
-    static_dir = os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(sys.executable)), "static")
-else:
-    static_dir = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL = "llama3.1:8b"
@@ -45,7 +36,7 @@ MODEL = "llama3.1:8b"
 
 @app.get("/")
 async def root():
-    return HTMLResponse(Path(static_dir, "index.html").read_text(encoding="utf-8"))
+    return HTMLResponse(Path("static/index.html").read_text(encoding="utf-8"))
 
 
 @app.post("/api/analyze")
@@ -593,7 +584,7 @@ def _init_kokoro_sync():
 # Best Kokoro voice for a warm, confident, professional female interviewer.
 KOKORO_VOICE = "af_heart"        # Primary
 KOKORO_FALLBACK_VOICE = "af_sarah"  # If the requested voice is unavailable
-KOKORO_SPEED = 0.88              # Slightly slower = more deliberate, confident pacing
+KOKORO_SPEED = 0.88              # Natural conversational pacing (0.80 was too slow / draggy)
 
 # Kokoro voices the app is allowed to request (female + male interviewers).
 VALID_KOKORO_VOICES = [
@@ -606,7 +597,7 @@ VALID_KOKORO_VOICES = [
 class SpeakRequest(BaseModel):
     text: str
     voice: str = "af_heart"
-    speed: float = 0.88
+    speed: float = 0.80
 
 
 def _generate_kokoro_wav(text: str, voice: str = KOKORO_VOICE, speed: float = KOKORO_SPEED) -> bytes:
@@ -869,11 +860,16 @@ def _humanize_text(text: str) -> str:
     for word in _FILLER_WORDS:
         text = re.sub(rf"\b{re.escape(word)}\b(?!,)", f"{word},", text)
 
-    # Em-dashes and ellipses become soft pauses.
-    text = text.replace("—", ", ").replace("...", ", ").replace("…", ", ")
+    # Reduce pause-heavy punctuation so the voice flows instead of dragging.
+    # Em-dashes and ellipses become a plain space (no long TTS pause). Periods at
+    # sentence ends are kept — SimultaneousSpeaker needs them for boundary detection.
+    text = text.replace(" — ", " ").replace("—", " ")
+    text = text.replace("...", " ").replace("…", " ")
 
     # Collapse any doubled commas / whitespace the steps above may have introduced.
     text = re.sub(r",\s*,", ",", text)
+    text = re.sub(r",\s*([.!?])", r"\1", text)   # drop a comma stuck before sentence end ("Got it,." -> "Got it.")
+    text = re.sub(r"\s+([,.!?])", r"\1", text)   # no space before punctuation
     text = re.sub(r"\s+", " ", text).strip()
     return text
 
@@ -900,7 +896,9 @@ async def speak_text(request: Request):
     body = await request.json()
     raw_text = (body.get("text") or "").strip()
     voice = body.get("voice") or KOKORO_VOICE
-    speed = float(body.get("speed", KOKORO_SPEED))
+    # Always speak at the natural, human conversational pace. (Pin generation to
+    # KOKORO_SPEED = 0.88 rather than honoring the client's speed slider.)
+    speed = KOKORO_SPEED
 
     # Validate the requested voice; fall back to the default female voice.
     if voice not in VALID_KOKORO_VOICES:
@@ -989,7 +987,5 @@ def _clean_for_tts(text: str) -> str:
 
 
 if __name__ == "__main__":
-    import multiprocessing
-    multiprocessing.freeze_support()
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=False)
