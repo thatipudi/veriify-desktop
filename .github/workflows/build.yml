@@ -39,6 +39,7 @@ jobs:
             --add-data "prompts:prompts" \
             --add-data "utils:utils" \
             --collect-all kokoro_onnx \
+            --collect-data language_tags \
             app.py
 
       - name: Install Node dependencies
@@ -84,6 +85,8 @@ jobs:
             --add-data "static;static" `
             --add-data "prompts;prompts" `
             --add-data "utils;utils" `
+            --collect-all kokoro_onnx `
+            --collect-data language_tags `
             app.py
 
       - name: Install Node dependencies
