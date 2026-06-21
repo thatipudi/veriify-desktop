@@ -6,6 +6,9 @@ dist/
 backend/dist/
 backend/build/
 
+# Kokoro model files (too large for git; downloaded during CI build)
+backend/models/
+
 # PyInstaller spec (regenerated each build)
 backend/*.spec
 

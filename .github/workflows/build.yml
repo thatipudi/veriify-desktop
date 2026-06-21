@@ -31,6 +31,12 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Download Kokoro models
+        run: |
+          mkdir -p backend/models
+          wget -q https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin -O backend/models/voices-v1.0.bin
+          wget -q https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx -O backend/models/kokoro-v1.0.onnx
+
       - name: Build Python backend
         run: |
           cd backend
@@ -78,6 +84,13 @@ jobs:
           cd backend
           pip install -r requirements.txt
           pip install pyinstaller
+
+      - name: Download Kokoro models
+        shell: bash
+        run: |
+          mkdir -p backend/models
+          curl -L -o backend/models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+          curl -L -o backend/models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
 
       - name: Build Python backend
         run: |
