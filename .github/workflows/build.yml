@@ -38,6 +38,7 @@ jobs:
             --add-data "static:static" \
             --add-data "prompts:prompts" \
             --add-data "utils:utils" \
+            --add-data "models:models" \
             --collect-all kokoro_onnx \
             --collect-data language_tags \
             app.py
@@ -85,6 +86,7 @@ jobs:
             --add-data "static;static" `
             --add-data "prompts;prompts" `
             --add-data "utils;utils" `
+            --add-data "models;models" `
             --collect-all kokoro_onnx `
             --collect-data language_tags `
             app.py

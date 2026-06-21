@@ -5,6 +5,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import threading
 import uuid
@@ -27,8 +28,17 @@ from utils.session import InterviewSession, sessions
 from utils import database as authdb
 from utils.email import send_welcome_email
 
+# When frozen by PyInstaller (--onefile), bundled data is extracted to sys._MEIPASS
+# at runtime; otherwise resolve relative to this file. All bundled paths (static,
+# models) MUST derive from this base — the process CWD is not reliable when frozen.
+if getattr(sys, "frozen", False):
+    _BASE_DIR = Path(sys._MEIPASS)
+else:
+    _BASE_DIR = Path(__file__).resolve().parent
+_STATIC_DIR = _BASE_DIR / "static"
+
 app = FastAPI(title="Mock Interview Coach")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 MODEL = "llama3.1:8b"
@@ -36,7 +46,7 @@ MODEL = "llama3.1:8b"
 
 @app.get("/")
 async def root():
-    return HTMLResponse(Path("static/index.html").read_text(encoding="utf-8"))
+    return HTMLResponse((_STATIC_DIR / "index.html").read_text(encoding="utf-8"))
 
 
 @app.post("/api/analyze")
@@ -555,7 +565,7 @@ def _get_whisper_model():
 
 
 # ── Kokoro ONNX (TTS) ─────────────────────────────────────────────────────────
-_MODELS_DIR = Path(__file__).parent / "models"
+_MODELS_DIR = _BASE_DIR / "models"
 _KOKORO_MODEL_PATH = str(_MODELS_DIR / "kokoro-v1.0.onnx")
 _KOKORO_VOICES_PATH = str(_MODELS_DIR / "voices-v1.0.bin")
 
